@@ -105,7 +105,7 @@ n_tweets_plot <-
   theme_minimal(base_size = 20) + 
   # make the base_size smaller on your laptop!
   # it's big for the projector
-  theme(axis.text.y = element_text(size = rel(.6)), 
+  theme(axis.text.y = element_text(size = rel(.5)), 
         strip.text = element_text(size = rel(1.2)), 
         plot.title = element_text(size = rel(1.5)))
 
