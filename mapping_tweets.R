@@ -187,9 +187,12 @@ static_map_africa
 #' `leaflet()` creates the widget; *tiles* are the map background, 
 #' and *markers* are the points based on the data.
 #' 
+#' To make the map faster to manipulate, we plot a sample of **1000 tweets**. 
+#' 
+set.seed(20171029)
 pal <- colorFactor("Paired", tweets_africa$lang)
 map_africa <-
-  leaflet(data = tweets_africa) %>%
+  leaflet(data = sample_n(tweets_africa, 1000)) %>%
   addTiles() %>%
   addCircleMarkers(lat = ~place_lat, lng = ~place_lon, 
                    popup = ~str_c(screen_name, ": ", text), 
