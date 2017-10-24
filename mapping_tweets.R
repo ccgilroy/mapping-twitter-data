@@ -29,18 +29,17 @@
 library(countrycode)
 library(forcats)
 library(leaflet)
-library(streamR)
 library(stringr)
 library(tidyverse)
 
 #' ## Data: tweets from Africa
 
-tweets_unfiltered <- parseTweets("data/tweets_africa.json")
+tweets_unfiltered <- readRDS("data/tweets_africa.rds")
 
 #' These African tweets were collected using a rectangular 
 #' "bounding box" around Africa. Because of this, the data include
 #' tweets from the Middle East and Mediterranean. 
-#' (See collect_tweets.R for the collection code.)
+#' (See `collect_tweets.R` for the collection code.)
 #'
 #' We want to filter down to tweets from African countries only. 
 #' 
@@ -74,15 +73,27 @@ tweets_africa_summarized <-
   tweets_africa %>%
   group_by(country_code, country.name.en, region) %>%
   count() %>%
-  ungroup() %>%
-  mutate(country.name.en =
-           str_replace(country.name.en,
-                       "Democratic Republic of the Congo",
-                       "DRC")) %>%
-  mutate(country.name.en = 
-           str_replace(country.name.en, 
-                       "United Republic of ", "")) %>%
-  mutate(country.name.en = as_factor(country.name.en))
+  ungroup() 
+
+#' We also shorten some country names (code not shown in slides)
+#+ echo=FALSE
+tweets_africa_summarized <- 
+  tweets_africa_summarized %>%
+  mutate(country.name.en = case_when(
+    country.name.en == "Democratic Republic of the Congo" ~ "DRC", 
+    country.name.en == "United Republic of Tanzania" ~ "Tanzania", 
+    country.name.en == "Saint Helena, Ascension and Tristan da Cunha" ~ "St. Helena", 
+    country.name.en == "Gambia (Islamic Republic of the)" ~ "Gambia", 
+    TRUE ~ country.name.en
+  )) %>%
+  mutate(country.name.en = as_factor(country.name.en), 
+         region = as_factor(region), 
+         region = fct_relevel(region, 
+                             "Western Africa", 
+                             "Northern Africa", 
+                             "Middle Africa", 
+                             "Eastern Africa", 
+                             "Southern Africa"))
 
 #' ## Build the plot
 n_tweets_plot <- 
@@ -90,17 +101,16 @@ n_tweets_plot <-
          aes(x = n, y = fct_reorder(country.name.en, n))) + 
   geom_point(size = 2) +
   facet_wrap(~region, scales = "free_y", ncol = 2) +
-  labs(y = NULL, x = NULL, 
-       title = "Number of tweets by country") + 
+  labs(y = NULL, x = NULL) + 
   theme_minimal(base_size = 20) + 
   # make the base_size smaller on your laptop!
   # it's big for the projector
-  theme(axis.text.y = element_text(size = rel(1)), 
+  theme(axis.text.y = element_text(size = rel(.6)), 
         strip.text = element_text(size = rel(1.2)), 
         plot.title = element_text(size = rel(1.5)))
 
 
-#' ##
+#' ## Number of tweets by country
 #+ echo=FALSE
 n_tweets_plot
 
@@ -109,16 +119,26 @@ n_tweets_plot
 library(ggthemes)
 map_data_africa <- 
   map_data("world", 
-           region = cc_africa$country.name.en.regex) %>%
+           region = cc_africa$country.name.en.regex) 
+
+#' Again, we need to modify some country names (code not shown in slides). 
+#' We must also rename the `country.name.en.regex` to `region`.
+#+ echo=FALSE
+map_data_africa <- 
+  map_data_africa %>%
   mutate(region = str_replace(region, "Ivory Coast",
                   "Côte D'Ivoire"), 
          region = str_replace(region, 
                   "Democratic Republic of the Congo",
-                  "DRC"))
+                  "DRC"), 
+         region = str_replace(region, 
+                  "Republic of Congo", 
+                  "Congo")) 
 
 tweets_africa_summarized2 <- 
   tweets_africa_summarized %>%
-  mutate(region = as.character(country.name.en))
+  mutate(un_region = region, 
+         region = country.name.en)
 
 #' ## Base map
 base_map_africa <- 
