@@ -13,7 +13,7 @@
 
 #' ## Why visualize?
 #' 
-#' > You should look at your data.  
+#' > "You should look at your data."    
 #' > ---Kieran Healy, *Data Visualization for Social Science*
 #' 
 #' Visualization is a powerful tool for *exploratory data analysis*. 
@@ -28,7 +28,6 @@
 #+ warning=FALSE, message=FALSE
 library(countrycode)
 library(forcats)
-library(htmltools)
 library(leaflet)
 library(streamR)
 library(stringr)
