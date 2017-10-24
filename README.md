@@ -19,7 +19,8 @@ of digital and spatial data.
 ## Using this module
 
 The easiest way to work with this module is as an "R Project." To do this, 
-omapping_tweets.Rproj` file (not the .R file!). This will open the R Project
+open the folder that you downloaded from Dropbox or Github and click on the
+`mapping_tweets.Rproj` file (not the .R file!). This will open the R Project
 in RStudio, and make it convenient to access all of the files you need.
 
 See this page for more information on R Projects in RStudio:
