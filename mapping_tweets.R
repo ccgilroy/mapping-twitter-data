@@ -32,6 +32,12 @@ library(leaflet)
 library(stringr)
 library(tidyverse)
 
+#' These additional package are needed for static mapping using `ggplot2`: 
+#+ warning=FALSE, message=FALSE
+library(ggthemes)
+library(maps)
+library(mapproj)
+
 #' ## Data: tweets from Africa
 
 tweets_unfiltered <- readRDS("data/tweets_africa.rds")
@@ -116,7 +122,6 @@ n_tweets_plot
 
 #' ## Interlude: Static map
 #+ message=FALSE, warning=FALSE
-library(ggthemes)
 map_data_africa <- 
   map_data("world", 
            region = cc_africa$country.name.en.regex) 
